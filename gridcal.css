@@ -1,0 +1,299 @@
+@import url('https://fonts.bunny.net/css?family=inter:300|oswald:300,400');
+
+@media print {
+  @page {
+    margin: 0;
+  }
+
+  #ui_info {
+    display: none;
+  }
+}
+
+:root {
+  --bg-page: #fffcf0;
+  --border-color: #000;
+  --border-width: 1pt;
+  --text-color: #000;
+  --title-text-color: #B8B3E9;
+  --muted-text-color: #000;
+  --moon-muted-text-color: #666;
+  --weekend-bg: #B8B3E9;
+  --ui-bg: #333;
+  --ui-text: #eee;
+  --table-height: calc(100% - 8vmin);
+
+  /* Highlight colors */
+  /* Pastel Yellow */
+  --highlight-1: #000;
+  /* current day highlight */
+  --current-day-highlight: #F9AB55;
+  /* Pastel Cyan */
+  --highlight-2: red;
+  /* Pastel Pink */
+  --highlight-3: #FFC4D6;
+}
+
+html {
+  font-family: 'Oswald', sans-serif;
+}
+
+html,
+body {
+  background-color: var(--bg-page);
+  height: 100%;
+  margin: 0;
+}
+
+body {
+  overflow: hidden;
+  padding: 5px;
+  box-sizing: border-box;
+}
+
+#page {
+  height: 100%;
+  padding: 5px;
+  box-sizing: border-box;
+}
+
+table {
+  width: 100%;
+  height: calc(100% - 8vmin);
+  border-collapse: separate;
+  border-spacing: 0;
+}
+
+th {
+  text-transform: uppercase;
+  border-bottom: var(--border-width) solid var(--border-color);
+  border-right: var(--border-width) solid var(--border-color);
+  font-size: 2.1vmin;
+  font-weight: 400;
+  color: var(--title-text-color);
+  vertical-align: bottom;
+  padding: 0;
+  text-align: left;;
+}
+
+td {
+  border-bottom: var(--border-width) solid var(--border-color);
+  border-right: var(--border-width) solid var(--border-color);
+  font-size: .9vmin;
+  font-weight: 300;
+  color: var(--text-color);
+  vertical-align: bottom;
+  padding: 0;
+  transition: background-color 0.15s ease;
+}
+
+/* Interactivity */
+td:not(.empty-day) {
+  cursor: pointer;
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+/* Highlight states - Dots */
+.mark-1,
+.mark-2,
+.mark-3 {
+  position: relative;
+}
+
+.mark-1::after,
+.mark-2::after,
+.mark-3::after {
+  content: "";
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+}
+
+/* 1. Filled Dot (Neutral) */
+.mark-1::after {
+  background-color: var(--highlight-1);
+}
+
+/* 2. Filled Colored Dot */
+.mark-2::after {
+  background-color: transparent;
+  border: 1.5px solid var(--text-color);
+  box-sizing: border-box;
+}
+
+/* 3. Dot Outline (Border only) */
+.mark-3::after {
+  background-color: var(--weekend-bg);
+}
+
+#ui_tbody>tr:first-child>td {
+  border-top: var(--border-width) solid var(--border-color);
+}
+
+/* DAY CELL STYLING */
+
+#ui_table td {
+  height: 6vh;
+}
+
+.cell_box {
+  display: grid;
+  height: 100%;
+  padding-inline: 2px;
+}
+
+.day_box {
+  display: flex;
+  justify-content: space-between;
+  align-self: end;
+}
+
+.cell_text {
+  text-align: center;
+  font-weight: 300;
+  text-transform: lowercase;
+  display: block;
+  align-content: center;
+}
+
+/* Empty day cells (e.g. Feb 29–31): preserve grid, hide borders */
+.empty-day {
+  border-top: 1px solid transparent;
+  border-right: 1px solid transparent;
+  pointer-events: none;
+}
+
+.date,
+.day {
+  display: inline-block;
+  width: 1em;
+  vertical-align: text-bottom;
+}
+
+.date {
+  text-align: end;
+  color: var(--text-color)
+}
+
+.day {
+  text-align: start;
+  color: var(--muted-text-color);
+}
+
+.weekend-highlight {
+  background: var(--weekend-bg);
+}
+
+p {
+  margin: 0 0 .5em 0;
+  text-align: center;
+}
+
+@media print {
+  table {
+    border-collapse: seperate;
+  }
+
+  * {
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+}
+
+#ui_info {
+  font-family: 'Inter', sans-serif;
+  position: absolute;
+  top: 0;
+  left: 0;
+  margin: 5em 2em;
+  width: calc(100% - 6em);
+  background: var(--ui-bg);
+  color: var(--ui-text);
+  padding: 1em 1em .5em 1em;
+  font-size: 2vmax;
+  border-radius: .2em;
+}
+
+#ui_info p {
+  text-align: left;
+  margin: 0 0 1em 0;
+  line-height: 135%;
+}
+
+#ui_info a {
+  color: inherit;
+}
+
+/* Year header styling */
+#ui_year {
+  width: 100%;
+}
+
+#ui_year .year-label {
+  display: inline-block;
+  width: 100%;
+  text-align: end;
+  font-size: 5vmin;
+  color: var(--title-text-color);
+}
+
+/* Moon phase styles */
+.moon-container {
+  display: block;
+  text-align: center;
+  margin-top: 0.2em;
+}
+
+.moon-inline {
+  margin-left: 0.2em;
+}
+
+.moon-symbol {
+  font-size: 1.1em;
+}
+
+.moon-name {
+  font-size: 0.7em;
+  color: var(--moon-muted-text-color);
+  text-transform: none;
+}
+
+.moon-phase {
+  display: inline-block;
+  width: 1em;
+  height: 1em;
+  vertical-align: middle;
+}
+
+.moon-phase svg {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+/* Passed days styling (Recessed Pop Art) */
+.passed-day {
+  position: relative;
+  box-shadow: inset 3px 3px 0px 0px #ccc;
+  background-color: #f4f4f4;
+  /* Slightly darker to emphasize depth */
+}
+
+/* Current day styling (Protruded Pop Art) */
+.current-day {
+  background-color: var(--bg-page);
+  box-shadow: 3px 3px 0px 0px #000;
+  border: 1px solid #000 !important;
+  /* Force override of standard cell borders */
+  transform: translate(-3px, -3px);
+  position: relative;
+  z-index: 10;
+}
+
+/* Ensure current day text is visible if background is dark, though highlight-1 is light */
+/* .current-day .date, .current-day .day { } */

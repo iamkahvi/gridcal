@@ -1,0 +1,4 @@
+- [ ] remove unecessary params + associated logic in @gridcal.js
+- [ ] construct UI configuration panel to edit calendar configuration (i.e. gridcal_data, gridcal_day_enabled, gridcal_highlight_color in local storage)
+- [ ] construct help/intro panel to show on first navigation
+- [ ] 
