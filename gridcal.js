@@ -1,4 +1,4 @@
-var NEATOCAL_PARAM = {
+var GRIDCAL_PARAM = {
   // experiments with filling in data in cells
   //
   data_fn: "",
@@ -85,42 +85,9 @@ var NEATOCAL_PARAM = {
   //
   show_week_numbers: false,
 
-  // fiddly parameters
+  // weekend days (0=Sunday, 6=Saturday)
   //
-  year_font_size: undefined,
-  year_font_weight: undefined,
-  year_foreground_color: undefined,
-  year_background_color: undefined,
-
-  month_font_size: undefined,
-  month_font_weight: undefined,
-  month_foreground_color: undefined,
-  month_background_color: undefined,
-
-  weekday_font_size: undefined,
-  weekday_font_weight: undefined,
-  weekday_foreground_color: undefined,
-  weekday_background_color: undefined,
-
-  weekend_font_size: undefined,
-  weekend_font_weight: undefined,
-  weekend_foreground_color: undefined,
-  weekend_background_color: undefined,
-
-  week_font_size: undefined,
-  week_font_weight: undefined,
-  week_foreground_color: undefined,
-  week_background_color: undefined,
-
-  date_font_size: undefined,
-  date_font_weight: undefined,
-  date_foreground_color: undefined,
-  date_background_color: undefined,
-
-  weekend_date_font_size: undefined,
-  weekend_date_font_weight: undefined,
-  weekend_date_foreground_color: undefined,
-  weekend_date_background_color: undefined,
+  weekend_days: [0, 6],
 };
 
 // simple HTML convenience functions
@@ -170,73 +137,11 @@ var H = {
 // If not found, returns.
 //
 // If found, each of the parameter variables is enumerated by tacking on the suffix
-// in the `sfx_param` array and testing to see if specified in the NEATOCAL_PARAM list.
+// in the `sfx_param` array and testing to see if specified in the GRIDCAL_PARAM list.
 // If found, the class stylings are applied to the HTML element using the `class_key`
 // value specified.
 //
-function ele_styles(ele, _type) {
-  let valid_type = [
-    "weekend",
-    "weekday",
-    "date",
-    "month",
-    "week",
-    "weekend_date",
-    "year",
-  ];
-  let sfx_param = [
-    "_font_size",
-    "_font_weight",
-    "_foreground_color",
-    "_background_color",
-  ];
-  let class_key = ["fontSize", "fontWeight", "color", "background"];
-
-  let _t = "";
-  for (let i = 0; i < valid_type.length; i++) {
-    if (valid_type[i] == _type) {
-      _t = valid_type[i];
-      break;
-    }
-  }
-  if (_t == "") {
-    return;
-  }
-
-  for (let i = 0; i < sfx_param.length; i++) {
-    let _param = _t + sfx_param[i];
-    if (
-      _param in NEATOCAL_PARAM &&
-      typeof NEATOCAL_PARAM[_param] !== "undefined"
-    ) {
-      ele.style[class_key[i]] = NEATOCAL_PARAM[_param];
-    }
-  }
-}
-
-// for convenience, functions wrap the above meta function
-//
-function weekend_styles(weekend_ele) {
-  ele_styles(weekend_ele, "weekend");
-}
-function weekday_styles(weekday_ele) {
-  ele_styles(weekday_ele, "weekday");
-}
-function week_styles(week_ele) {
-  ele_styles(week_ele, "week");
-}
-function date_styles(date_ele) {
-  ele_styles(date_ele, "date");
-}
-function weekend_date_styles(weekend_date_ele) {
-  ele_styles(weekend_date_ele, "weekend_date");
-}
-function month_styles(month_ele) {
-  ele_styles(month_ele, "month");
-}
-function year_styles(year_ele) {
-  ele_styles(year_ele, "year");
-}
+// Styling functions removed
 
 // Moon phase calculation functions
 // Reference: Known new moon on Jan 6, 2000, 18:14 UTC (Julian Day 2451550.26)
@@ -350,7 +255,7 @@ function createMoonPhaseCSS(phase, lunarAge) {
 }
 
 function renderMoonPhase(td, year, month, day) {
-  if (!NEATOCAL_PARAM.show_moon_phase) {
+  if (!GRIDCAL_PARAM.show_moon_phase) {
     return;
   }
 
@@ -359,7 +264,7 @@ function renderMoonPhase(td, year, month, day) {
 
   // If only showing phase changes, check if phase is different from previous day
   //
-  if (NEATOCAL_PARAM.moon_phase_display === "changes") {
+  if (GRIDCAL_PARAM.moon_phase_display === "changes") {
     // Calculate previous day
     //
     let prevDate = new Date(year, month, day - 1);
@@ -379,9 +284,9 @@ function renderMoonPhase(td, year, month, day) {
 
   let moonElement;
 
-  if (NEATOCAL_PARAM.moon_phase_style === "symbol") {
+  if (GRIDCAL_PARAM.moon_phase_style === "symbol") {
     moonElement = H.span(getMoonPhaseSymbol(phase), "moon-symbol");
-  } else if (NEATOCAL_PARAM.moon_phase_style === "name") {
+  } else if (GRIDCAL_PARAM.moon_phase_style === "name") {
     moonElement = H.span(getMoonPhaseName(phase), "moon-name");
   } else {
     // Default to CSS
@@ -389,7 +294,7 @@ function renderMoonPhase(td, year, month, day) {
     moonElement = createMoonPhaseCSS(phase, lunarAge);
   }
 
-  if (NEATOCAL_PARAM.moon_phase_position === "inline") {
+  if (GRIDCAL_PARAM.moon_phase_position === "inline") {
     // Add inline after a space
     //
     moonElement.classList.add("moon-inline");
@@ -405,12 +310,13 @@ function renderMoonPhase(td, year, month, day) {
   }
 }
 
+// localized_day and localized_month restored with default format
 function localized_day(locale, day_idx) {
   let iday = 17 + day_idx;
   let s = "1995-12-" + iday.toString() + "T12:00:01Z";
   let d = new Date(s);
   return d.toLocaleDateString(locale, {
-    weekday: NEATOCAL_PARAM.weekday_format,
+    weekday: "short",
   });
 }
 
@@ -419,13 +325,13 @@ function localized_month(locale, mo_idx) {
   let imo_str = imo < 10 ? "0" + imo.toString() : imo.toString();
   let s = "1995-" + imo_str + "-18T12:00:01Z";
   let d = new Date(s);
-  return d.toLocaleDateString(locale, { month: NEATOCAL_PARAM.month_format });
+  return d.toLocaleDateString(locale, { month: "short" });
 }
 
 function neatocal_default() {
-  let year = parseInt(NEATOCAL_PARAM.year);
-  let start_mo = NEATOCAL_PARAM.start_month;
-  let n_mo = NEATOCAL_PARAM.n_month;
+  let year = parseInt(GRIDCAL_PARAM.year);
+  let start_mo = GRIDCAL_PARAM.start_month;
+  let n_mo = GRIDCAL_PARAM.n_month;
 
   let tbody = document.getElementById("ui_tbody");
   tbody.innerHTML = "";
@@ -434,8 +340,8 @@ function neatocal_default() {
   for (let i_mo = start_mo; i_mo < start_mo + n_mo; i_mo++) {
     let tr = H.tr();
 
-    if (NEATOCAL_PARAM.cell_height) {
-      tr.style.height = NEATOCAL_PARAM.cell_height;
+    if (GRIDCAL_PARAM.cell_height) {
+      tr.style.height = GRIDCAL_PARAM.cell_height;
     }
 
     let cur_year = year + Math.floor(i_mo / 12);
@@ -443,8 +349,7 @@ function neatocal_default() {
     let nday_in_mo = new Date(cur_year, cur_mo + 1, 0).getDate();
 
     // Month label cell
-    let th = H.th(NEATOCAL_PARAM.month_code[cur_mo]);
-    month_styles(th);
+    let th = H.th(GRIDCAL_PARAM.month_code[cur_mo]);
     tr.appendChild(th);
 
     // Day cells
@@ -458,13 +363,13 @@ function neatocal_default() {
 
       if (day <= nday_in_mo) {
         let dt = new Date(cur_year, cur_mo, day);
-        let weekday = NEATOCAL_PARAM.weekday_code[dt.getDay()];
+        let weekday = GRIDCAL_PARAM.weekday_code[dt.getDay()];
 
         // Add ID for interactivity lookup
         let loop_date_str = fmt_date(cur_year, cur_mo + 1, day);
         td.id = "ui_" + loop_date_str;
 
-        if (NEATOCAL_PARAM.weekend_days.includes(dt.getDay())) {
+        if (GRIDCAL_PARAM.weekend_days.includes(dt.getDay())) {
           td.classList.add("weekend");
         }
 
@@ -481,11 +386,11 @@ function neatocal_default() {
 
         let yyyy_mm_dd = loop_date_str;
         if (
-          yyyy_mm_dd in NEATOCAL_PARAM.data &&
+          yyyy_mm_dd in GRIDCAL_PARAM.data &&
           localStorage.getItem("gridcal_text_enabled") === "true"
         ) {
           let txt = H.div();
-          txt.innerHTML = NEATOCAL_PARAM.data[yyyy_mm_dd];
+          txt.innerHTML = GRIDCAL_PARAM.data[yyyy_mm_dd];
           txt.classList.add("cell_text");
           span_cell_box.appendChild(txt);
           span_cell_box.style.gridTemplateRows = "1fr 20px";
@@ -494,24 +399,14 @@ function neatocal_default() {
         let span_date = H.span(day.toString(), "date");
         let span_day = H.span(weekday, "day");
 
-        date_styles(span_date);
-
-        if (NEATOCAL_PARAM.weekend_days.includes(dt.getDay())) {
-          weekend_styles(span_day);
-          weekend_date_styles(span_date);
-        } else {
-          weekday_styles(span_day);
-        }
-
         span_day_box.appendChild(span_day);
         span_day_box.appendChild(span_date);
         span_cell_box.appendChild(span_day_box);
         td.appendChild(span_cell_box);
 
-        if (dt.getDay() === 1 && NEATOCAL_PARAM.show_week_numbers) {
+        if (dt.getDay() === 1 && GRIDCAL_PARAM.show_week_numbers) {
           let span_week_no = H.span(getISOWeekNumber(dt), "date");
           span_week_no.style.float = "right";
-          week_styles(span_week_no);
           td.appendChild(span_week_no);
         }
 
@@ -624,7 +519,7 @@ function neatocal_post_process() {
   }
 
   // Highlight today's date
-  if (NEATOCAL_PARAM.today_highlight_color) {
+  if (GRIDCAL_PARAM.today_highlight_color) {
     let today = new Date();
     let today_str = fmt_date(
       today.getFullYear(),
@@ -633,12 +528,12 @@ function neatocal_post_process() {
     );
     let today_ele = document.getElementById("ui_" + today_str);
     if (today_ele) {
-      today_ele.style.background = NEATOCAL_PARAM.today_highlight_color;
+      today_ele.style.background = GRIDCAL_PARAM.today_highlight_color;
     }
   }
 
-  if ("color_cell" in NEATOCAL_PARAM) {
-    let color_cell = NEATOCAL_PARAM.color_cell;
+  if ("color_cell" in GRIDCAL_PARAM) {
+    let color_cell = GRIDCAL_PARAM.color_cell;
 
     for (let i = 0; i < color_cell.length; i++) {
       let ele = document.getElementById("ui_" + color_cell[i].date);
@@ -687,18 +582,6 @@ function neatocal_override_param(param, data) {
   let admissible_param = [
     "help",
 
-    "year",
-    "layout",
-
-    "start_day",
-    "start_month",
-    "n_month",
-
-    "weekday_code",
-    "weekday_format",
-    "month_code",
-    "month_format",
-
     "weekend_days",
 
     "language",
@@ -711,41 +594,6 @@ function neatocal_override_param(param, data) {
     "cell_height",
     "highlight_color",
     "today_highlight_color",
-
-    "year_font_size",
-    "year_font_weight",
-    "year_foreground_color",
-    "year_background_color",
-
-    "month_font_size",
-    "month_font_weight",
-    "month_foreground_color",
-    "month_background_color",
-
-    "weekday_font_size",
-    "weekday_font_weight",
-    "weekday_foreground_color",
-    "weekday_background_color",
-
-    "weekend_font_size",
-    "weekend_font_weight",
-    "weekend_foreground_color",
-    "weekend_background_color",
-
-    "week_font_size",
-    "week_font_weight",
-    "week_foreground_color",
-    "week_background_color",
-
-    "date_font_size",
-    "date_font_weight",
-    "date_foreground_color",
-    "date_background_color",
-
-    "weekend_date_font_size",
-    "weekend_date_font_weight",
-    "weekend_date_foreground_color",
-    "weekend_date_background_color",
   ];
 
   for (let idx = 0; idx < admissible_param.length; idx++) {
@@ -768,10 +616,10 @@ function neatocal_parse_data(raw) {
     if (raw.target.readyState == 4 && raw.target.status == 200) {
       try {
         let json_data = JSON.parse(raw.target.response);
-        NEATOCAL_PARAM.data = json_data;
+        GRIDCAL_PARAM.data = json_data;
 
-        if (typeof NEATOCAL_PARAM.data.param !== "undefined") {
-          neatocal_override_param(NEATOCAL_PARAM, NEATOCAL_PARAM.data.param);
+        if (typeof GRIDCAL_PARAM.data.param !== "undefined") {
+          neatocal_override_param(GRIDCAL_PARAM, GRIDCAL_PARAM.data.param);
         }
       } catch (e) {
         console.log("error parsing data file:", e);
@@ -796,7 +644,6 @@ function neatocal_init() {
 
   let help_param = sp.get("help");
   let year_param = sp.get("year");
-  let layout_param = sp.get("layout");
   let start_month_param = sp.get("start_month");
   let n_month_param = sp.get("n_month");
   let start_day_param = sp.get("start_day");
@@ -804,9 +651,7 @@ function neatocal_init() {
   let today_highlight_color_param = sp.get("today_highlight_color");
   let cell_height_param = sp.get("cell_height");
   let weekday_code_param = sp.get("weekday_code");
-  let weekday_format_param = sp.get("weekday_format");
   let month_code_param = sp.get("month_code");
-  let month_format_param = sp.get("month_format");
   let language_param = sp.get("language");
   let show_week_numbers_param = sp.get("show_week_numbers");
 
@@ -821,31 +666,7 @@ function neatocal_init() {
 
   // fiddly stylings
   //
-  let _ele_pfx = [
-    "year",
-    "month",
-    "weekday",
-    "weekend",
-    "week",
-    "date",
-    "weekend_date",
-  ];
-  let _ele_sfx = [
-    "font_size",
-    "font_weight",
-    "foreground_color",
-    "background_color",
-  ];
-  for (let i_p = 0; i_p < _ele_pfx.length; i_p++) {
-    for (let i_s = 0; i_s < _ele_sfx.length; i_s++) {
-      let _ele_name = _ele_pfx[i_p] + "_" + _ele_sfx[i_s];
-      let _ele_param = sp.get(_ele_name);
-
-      if (_ele_param != null && typeof _ele_param !== "undefined") {
-        NEATOCAL_PARAM[_ele_name] = _ele_param;
-      }
-    }
-  }
+  // fiddly stylings removed
 
   // JSON data file
   //
@@ -857,7 +678,7 @@ function neatocal_init() {
   if (datafn_param != null && typeof datafn_param !== "undefined") {
     data_fn = datafn_param;
   }
-  NEATOCAL_PARAM.data_fn = data_fn;
+  GRIDCAL_PARAM.data_fn = data_fn;
 
   //---
 
@@ -865,61 +686,48 @@ function neatocal_init() {
   if (year_param != null && typeof year_param !== "undefined") {
     year = year_param;
   }
-  NEATOCAL_PARAM.year = year;
+  GRIDCAL_PARAM.year = year;
 
   //---
 
-  let layout = NEATOCAL_PARAM.layout;
-  if (layout_param != null && typeof layout_param !== "undefined") {
-    _l = sp.get("layout");
-    if (_l == "default") {
-      layout = "default";
-    } else if (_l == "aligned-weekdays") {
-      layout = "aligned-weekdays";
-    } else if (_l == "hallon-almanackan") {
-      layout = "hallon-almanackan";
-      NEATOCAL_PARAM.show_week_numbers = true;
-      NEATOCAL_PARAM.weekend_days = [0];
-    }
-  }
-  NEATOCAL_PARAM.layout = layout;
+  // layout logic removed
 
   //---
 
-  let start_month = NEATOCAL_PARAM.start_month;
+  let start_month = GRIDCAL_PARAM.start_month;
   if (start_month_param != null && typeof start_month_param !== "undefined") {
     start_month = parseInt(start_month_param);
     if (isNaN(start_month)) {
       start_month = 0;
     }
   }
-  NEATOCAL_PARAM.start_month = start_month;
+  GRIDCAL_PARAM.start_month = start_month;
 
   //---
 
-  let n_month = NEATOCAL_PARAM.n_month;
+  let n_month = GRIDCAL_PARAM.n_month;
   if (n_month_param != null && typeof n_month_param !== "undefined") {
     n_month = parseInt(n_month_param);
     if (isNaN(n_month)) {
       n_month = 0;
     }
   }
-  NEATOCAL_PARAM.n_month = n_month;
+  GRIDCAL_PARAM.n_month = n_month;
 
   //---
 
-  let start_day = NEATOCAL_PARAM.start_day;
+  let start_day = GRIDCAL_PARAM.start_day;
   if (start_day_param != null && typeof start_day_param !== "undefined") {
     start_day = parseInt(start_day_param);
     if (isNaN(start_day)) {
       start_day = 0;
     }
   }
-  NEATOCAL_PARAM.start_day = start_day;
+  GRIDCAL_PARAM.start_day = start_day;
 
   //---
 
-  let highlight_color = NEATOCAL_PARAM.highlight_color;
+  let highlight_color = GRIDCAL_PARAM.highlight_color;
   if (
     highlight_color_param != null &&
     typeof highlight_color_param !== "undefined"
@@ -929,11 +737,11 @@ function neatocal_init() {
       highlight_color = "#" + highlight_color;
     }
   }
-  NEATOCAL_PARAM.highlight_color = highlight_color;
+  GRIDCAL_PARAM.highlight_color = highlight_color;
 
   //---
 
-  let today_highlight_color = NEATOCAL_PARAM.today_highlight_color;
+  let today_highlight_color = GRIDCAL_PARAM.today_highlight_color;
   if (
     today_highlight_color_param != null &&
     typeof today_highlight_color_param !== "undefined"
@@ -943,31 +751,19 @@ function neatocal_init() {
       today_highlight_color = "#" + today_highlight_color;
     }
   }
-  NEATOCAL_PARAM.today_highlight_color = today_highlight_color;
+  GRIDCAL_PARAM.today_highlight_color = today_highlight_color;
 
   //---
 
-  let cell_height = NEATOCAL_PARAM.cell_height;
+  let cell_height = GRIDCAL_PARAM.cell_height;
   if (cell_height_param != null && typeof cell_height_param !== "undefined") {
     cell_height = cell_height_param;
   }
-  NEATOCAL_PARAM.cell_height = cell_height;
+  GRIDCAL_PARAM.cell_height = cell_height;
 
   //---
 
-  if (new Set(["long", "short", "narrow"]).has(weekday_format_param)) {
-    NEATOCAL_PARAM.weekday_format = weekday_format_param;
-  }
-
-  //---
-
-  if (
-    new Set(["numeric", "2-digit", "long", "short", "narrow"]).has(
-      month_format_param
-    )
-  ) {
-    NEATOCAL_PARAM.month_format = month_format_param;
-  }
+  // weekday_format / month_format removed
 
   //---
 
@@ -977,14 +773,14 @@ function neatocal_init() {
   //
   if (language_param != null && typeof language_param !== "undefined") {
     for (let day_idx = 0; day_idx < 7; day_idx++) {
-      NEATOCAL_PARAM.weekday_code[day_idx] = localized_day(
+      GRIDCAL_PARAM.weekday_code[day_idx] = localized_day(
         language_param,
         day_idx
       );
     }
 
     for (let mo_idx = 0; mo_idx < 12; mo_idx++) {
-      NEATOCAL_PARAM.month_code[mo_idx] = localized_month(
+      GRIDCAL_PARAM.month_code[mo_idx] = localized_month(
         language_param,
         mo_idx
       );
@@ -993,7 +789,7 @@ function neatocal_init() {
 
   //---
 
-  let weekday_code = NEATOCAL_PARAM.weekday_code;
+  let weekday_code = GRIDCAL_PARAM.weekday_code;
   if (weekday_code_param != null && typeof weekday_code_param !== "undefined") {
     weekday_code = weekday_code_param.split(",");
 
@@ -1003,11 +799,11 @@ function neatocal_init() {
       weekday_code.push("");
     }
   }
-  NEATOCAL_PARAM.weekday_code = weekday_code;
+  GRIDCAL_PARAM.weekday_code = weekday_code;
 
   //---
 
-  let month_code = NEATOCAL_PARAM.month_code;
+  let month_code = GRIDCAL_PARAM.month_code;
   if (month_code_param != null && typeof month_code_param !== "undefined") {
     month_code = month_code_param.split(",");
 
@@ -1017,7 +813,7 @@ function neatocal_init() {
       month_code.push("");
     }
   }
-  NEATOCAL_PARAM.month_code = month_code;
+  GRIDCAL_PARAM.month_code = month_code;
 
   //---
 
@@ -1025,7 +821,7 @@ function neatocal_init() {
   //
   if (weekend_days_param != null && typeof weekend_days_param !== "undefined") {
     let days = weekend_days_param.split(",").map((d) => parseInt(d.trim()));
-    NEATOCAL_PARAM.weekend_days = days.filter(
+    GRIDCAL_PARAM.weekend_days = days.filter(
       (d) => !isNaN(d) && d >= 0 && d <= 6
     );
   }
@@ -1038,14 +834,14 @@ function neatocal_init() {
     show_week_numbers_param != null &&
     typeof show_week_numbers_param !== "undefined"
   ) {
-    NEATOCAL_PARAM.show_week_numbers = show_week_numbers_param === "true";
+    GRIDCAL_PARAM.show_week_numbers = show_week_numbers_param === "true";
   }
 
   //---
 
   // Moon phase parameters
   //
-  let show_moon_phase = NEATOCAL_PARAM.show_moon_phase;
+  let show_moon_phase = GRIDCAL_PARAM.show_moon_phase;
   if (
     show_moon_phase_param != null &&
     typeof show_moon_phase_param !== "undefined"
@@ -1053,11 +849,11 @@ function neatocal_init() {
     show_moon_phase =
       show_moon_phase_param === "true" || show_moon_phase_param === "1";
   }
-  NEATOCAL_PARAM.show_moon_phase = show_moon_phase;
+  GRIDCAL_PARAM.show_moon_phase = show_moon_phase;
 
   //---
 
-  let moon_phase_style = NEATOCAL_PARAM.moon_phase_style;
+  let moon_phase_style = GRIDCAL_PARAM.moon_phase_style;
   if (
     moon_phase_style_param != null &&
     typeof moon_phase_style_param !== "undefined"
@@ -1070,11 +866,11 @@ function neatocal_init() {
       moon_phase_style = moon_phase_style_param;
     }
   }
-  NEATOCAL_PARAM.moon_phase_style = moon_phase_style;
+  GRIDCAL_PARAM.moon_phase_style = moon_phase_style;
 
   //---
 
-  let moon_phase_position = NEATOCAL_PARAM.moon_phase_position;
+  let moon_phase_position = GRIDCAL_PARAM.moon_phase_position;
   if (
     moon_phase_position_param != null &&
     typeof moon_phase_position_param !== "undefined"
@@ -1086,11 +882,11 @@ function neatocal_init() {
       moon_phase_position = moon_phase_position_param;
     }
   }
-  NEATOCAL_PARAM.moon_phase_position = moon_phase_position;
+  GRIDCAL_PARAM.moon_phase_position = moon_phase_position;
 
   //---
 
-  let moon_phase_display = NEATOCAL_PARAM.moon_phase_display;
+  let moon_phase_display = GRIDCAL_PARAM.moon_phase_display;
   if (
     moon_phase_display_param != null &&
     typeof moon_phase_display_param !== "undefined"
@@ -1102,7 +898,7 @@ function neatocal_init() {
       moon_phase_display = moon_phase_display_param;
     }
   }
-  NEATOCAL_PARAM.moon_phase_display = moon_phase_display;
+  GRIDCAL_PARAM.moon_phase_display = moon_phase_display;
 
   //---
 
@@ -1110,9 +906,9 @@ function neatocal_init() {
   // neatocal_parse_data will call neatocal_render to render the
   // calendar.
   //
-  if (NEATOCAL_PARAM.data_fn) {
+  if (GRIDCAL_PARAM.data_fn) {
     loadXHR(
-      NEATOCAL_PARAM.data_fn,
+      GRIDCAL_PARAM.data_fn,
       neatocal_parse_data,
       neatocal_parse_data_error
     );
@@ -1125,14 +921,14 @@ function neatocal_init() {
     console.log("Loaded gridcal_data from localStorage:", localData);
     if (localData) {
       const parsedData = JSON.parse(localData);
-      NEATOCAL_PARAM.data =
+      GRIDCAL_PARAM.data =
         parsedData && typeof parsedData === "object" ? parsedData : {};
     } else {
-      NEATOCAL_PARAM.data = {};
+      GRIDCAL_PARAM.data = {};
     }
   } catch (e) {
     console.error("Failed to load gridcal_data from localStorage", e);
-    NEATOCAL_PARAM.data = {};
+    GRIDCAL_PARAM.data = {};
   }
 
   // no data file, just render
@@ -1141,14 +937,14 @@ function neatocal_init() {
 }
 
 function neatocal_render() {
-  let cur_start_month = NEATOCAL_PARAM.start_month;
-  let month_remain = NEATOCAL_PARAM.n_month;
-  let s_year = parseInt(NEATOCAL_PARAM.year);
+  let cur_start_month = GRIDCAL_PARAM.start_month;
+  let month_remain = GRIDCAL_PARAM.n_month;
+  let s_year = parseInt(GRIDCAL_PARAM.year);
   let e_year =
-    parseInt(NEATOCAL_PARAM.year) +
+    parseInt(GRIDCAL_PARAM.year) +
     Math.floor((cur_start_month + month_remain - 1) / 12);
 
-  let layout = NEATOCAL_PARAM.layout;
+
 
   let year_fraction_tot = 0;
   let year_fraction = [];
@@ -1176,8 +972,6 @@ function neatocal_render() {
   for (let y = s_year, idx = 0; y <= e_year; y++, idx++) {
     let span = H.span(y.toString(), "year-label");
     span.style.width = (100 * year_fraction[idx]).toString() + "%";
-
-    year_styles(span);
 
     ui_year.appendChild(span);
   }
