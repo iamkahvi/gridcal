@@ -15,10 +15,10 @@
   --table-height: calc(100% - 8vmin);
 
   --border-color: #000;
-  --border-width: 1pt;
+  --border-width: 1.5px;
 
   --text-color: #000;
-  --muted-text-color: #4d4d4d;
+  --muted-text-color: #000000;
 
   --highlight-color: #B8B3E9;
 
@@ -51,7 +51,7 @@ body {
 table {
   width: 100%;
   height: calc(100% - 8vmin);
-  border-collapse: separate;
+  border-collapse: collapse;
   border-spacing: 0;
 }
 
@@ -70,7 +70,7 @@ th {
 td {
   border-bottom: var(--border-width) solid var(--border-color);
   border-right: var(--border-width) solid var(--border-color);
-  font-size: .9vmin;
+  font-size: .8vmin;
   font-weight: 300;
   color: var(--text-color);
   vertical-align: bottom;
@@ -88,18 +88,19 @@ td:not(.empty-day) {
 /* Highlight states - Dots (two levels) */
 .mark-2,
 .mark-3 {
-  position: relative;
+  position: relative;;
 }
 
 .mark-2::after,
 .mark-3::after {
+  font-size: 8px;
   content: "";
   position: absolute;
   top: 0.35em;
   right: 0.35em;
   width: 0.65em;
   height: 0.65em;
-  border-radius: 50%;
+  border-radius: 100%;
 }
 
 /* 1. Outlined Dot */
@@ -135,19 +136,36 @@ td:not(.empty-day) {
 .cell_box {
   display: grid;
   height: 100%;
-  padding-inline: 2px;
+  grid-template-rows: 15% 70% 15%;
+}
+
+.mark_box {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  padding-right: 0.35em;
+}
+
+.mark_box_inner {
+  border-radius: 100%;
+  border: 1.5px solid var(--highlight-color);
+  box-sizing: border-box;
+  width: 0.65em;
+  height: 0.65em;
+  display: none;
 }
 
 .day_box {
   display: flex;
   justify-content: space-between;
   align-self: end;
+  padding-inline: 2px;
 }
 
 .cell_text {
   font-weight: 300;
   text-transform: lowercase;
-  display: grid;
+  display: flex;
   justify-content: center;
   align-items: center;
 }
@@ -198,10 +216,6 @@ p {
 }
 
 @media print {
-  table {
-    border-collapse: seperate;
-  }
-
   * {
     -webkit-print-color-adjust: exact;
     print-color-adjust: exact;

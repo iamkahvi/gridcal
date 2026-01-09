@@ -384,17 +384,23 @@ function neatocal_default() {
           }
         }
 
+        let mark_box = H.div();
+        let mark_box_inner = H.div();
+        mark_box_inner.classList.add("mark_box_inner");
+        mark_box.appendChild(mark_box_inner);
+        mark_box.classList.add("mark_box");
+        span_cell_box.appendChild(mark_box);
+
+        let txt = H.div();
         let yyyy_mm_dd = loop_date_str;
         if (
           yyyy_mm_dd in GRIDCAL_PARAM.data &&
           localStorage.getItem("gridcal_text_enabled") === "true"
         ) {
-          let txt = H.div();
           txt.innerHTML = GRIDCAL_PARAM.data[yyyy_mm_dd];
           txt.classList.add("cell_text");
-          span_cell_box.appendChild(txt);
-          span_cell_box.style.gridTemplateRows = "80% 20%";
         }
+        span_cell_box.appendChild(txt);
 
         let span_date = H.span(day.toString(), "date");
         let span_day = H.span(weekday, "day");
@@ -698,7 +704,9 @@ function neatocal_init() {
 
     const background = localStorage.getItem("gridcal_background_color");
     if (background) {
-      const bgColor = background.startsWith("#") ? background : "#" + background;
+      const bgColor = background.startsWith("#")
+        ? background
+        : "#" + background;
       document.documentElement.style.setProperty("--bg-page", bgColor);
     }
   } catch (e) {
