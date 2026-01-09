@@ -393,7 +393,7 @@ function neatocal_default() {
           txt.innerHTML = GRIDCAL_PARAM.data[yyyy_mm_dd];
           txt.classList.add("cell_text");
           span_cell_box.appendChild(txt);
-          span_cell_box.style.gridTemplateRows = "1fr 20px";
+          span_cell_box.style.gridTemplateRows = "80% 20%";
         }
 
         let span_date = H.span(day.toString(), "date");
@@ -483,10 +483,11 @@ function saveMark(date, state) {
 
 function applyMarkClasses(ele, state) {
   ele.classList.remove("mark-1", "mark-2", "mark-3");
-  if (state === 1) ele.classList.add("mark-1");
-  if (state === 2) ele.classList.add("mark-2");
-  if (state === 3) ele.classList.add("mark-3");
+  if (state === 1) ele.classList.add("mark-2"); // outlined dot
+  if (state === 2) ele.classList.add("mark-3"); // filled dot
 }
+
+const GRIDCAL_TEXT_LIMIT = 120;
 
 function handleDayClick(e) {
   // Find the closest TD
@@ -498,18 +499,68 @@ function handleDayClick(e) {
 
   // Get current state
   let currentState = 0;
-  if (td.classList.contains("mark-1")) currentState = 1;
-  else if (td.classList.contains("mark-2")) currentState = 2;
-  else if (td.classList.contains("mark-3")) currentState = 3;
+  if (td.classList.contains("mark-2")) currentState = 1; // outlined
+  else if (td.classList.contains("mark-3")) currentState = 2; // filled
 
-  // Calculate next state (cycle 0 -> 1 -> 2 -> 3 -> 0)
-  let nextState = (currentState + 1) % 4;
+  // Calculate next state (cycle 0 -> 1 -> 2 -> 0)
+  let nextState = (currentState + 1) % 3;
 
   // Apply visual change
   applyMarkClasses(td, nextState);
 
   // Persist
   saveMark(dateId, nextState);
+}
+
+function handleDayContextMenu(e) {
+  e.preventDefault();
+  let td = e.target.closest("td");
+  if (!td || td.classList.contains("empty-day")) return;
+
+  let dateId = td.id.replace("ui_", "");
+
+  // Prevent multiple editors
+  if (td.querySelector("textarea")) return;
+
+  let existing = GRIDCAL_PARAM.data[dateId] || "";
+
+  let textarea = document.createElement("textarea");
+  textarea.classList.add("cell-editor");
+  textarea.maxLength = GRIDCAL_TEXT_LIMIT;
+  textarea.value = existing;
+
+  let cancelled = false;
+
+  textarea.addEventListener("keydown", (ev) => {
+    if (ev.key === "Enter") {
+      ev.preventDefault();
+      textarea.blur();
+    }
+
+    if (ev.key === "Escape") {
+      ev.preventDefault();
+      cancelled = true;
+      neatocal_render();
+    }
+  });
+
+  textarea.addEventListener("blur", () => {
+    if (cancelled) return;
+
+    let val = textarea.value.trim();
+
+    if (val) {
+      GRIDCAL_PARAM.data[dateId] = val;
+    } else {
+      delete GRIDCAL_PARAM.data[dateId];
+    }
+
+    localStorage.setItem("gridcal_data", JSON.stringify(GRIDCAL_PARAM.data));
+    neatocal_render();
+  });
+
+  td.appendChild(textarea);
+  textarea.focus();
 }
 
 function neatocal_post_process() {
@@ -553,12 +604,12 @@ function neatocal_post_process() {
     }
   }
 
-  // Attach event listener
+  // Attach event listeners
   let tbody = document.getElementById("ui_tbody");
-  // Remove existing listener if any to avoid duplicates (though difficult without named ref,
-  // relying on neatocal_post_process usually running once per render)
   tbody.removeEventListener("click", handleDayClick);
+  tbody.removeEventListener("contextmenu", handleDayContextMenu);
   tbody.addEventListener("click", handleDayClick);
+  tbody.addEventListener("contextmenu", handleDayContextMenu);
 }
 
 function loadXHR(url, _cb, _errcb) {
@@ -637,6 +688,23 @@ function neatocal_parse_data(raw) {
 }
 
 function neatocal_init() {
+  // Apply highlight color from localStorage if present
+  try {
+    const highlight = localStorage.getItem("gridcal_highlight_color");
+    if (highlight) {
+      const color = highlight.startsWith("#") ? highlight : "#" + highlight;
+      document.documentElement.style.setProperty("--highlight-color", color);
+    }
+
+    const background = localStorage.getItem("gridcal_background_color");
+    if (background) {
+      const bgColor = background.startsWith("#") ? background : "#" + background;
+      document.documentElement.style.setProperty("--bg-page", bgColor);
+    }
+  } catch (e) {
+    console.warn("Failed to apply gridcal color settings", e);
+  }
+
   let sp = new URLSearchParams(window.location.search);
 
   // peel off parameters from URL
@@ -943,8 +1011,6 @@ function neatocal_render() {
   let e_year =
     parseInt(GRIDCAL_PARAM.year) +
     Math.floor((cur_start_month + month_remain - 1) / 12);
-
-
 
   let year_fraction_tot = 0;
   let year_fraction = [];

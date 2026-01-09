@@ -12,26 +12,17 @@
 
 :root {
   --bg-page: #fffcf0;
-  --border-color: #000;
-  --border-width: 1pt;
-  --text-color: #000;
-  --title-text-color: #B8B3E9;
-  --muted-text-color: #000;
-  --moon-muted-text-color: #666;
-  --weekend-bg: #B8B3E9;
-  --ui-bg: #333;
-  --ui-text: #eee;
   --table-height: calc(100% - 8vmin);
 
-  /* Highlight colors */
-  /* Pastel Yellow */
-  --highlight-1: #000;
-  /* current day highlight */
-  --current-day-highlight: #F9AB55;
-  /* Pastel Cyan */
-  --highlight-2: red;
-  /* Pastel Pink */
-  --highlight-3: #FFC4D6;
+  --border-color: #000;
+  --border-width: 1pt;
+
+  --text-color: #000;
+  --muted-text-color: #4d4d4d;
+
+  --highlight-color: #B8B3E9;
+
+  --moon-muted-text-color: #666;
 }
 
 html {
@@ -70,7 +61,7 @@ th {
   border-right: var(--border-width) solid var(--border-color);
   font-size: 2.1vmin;
   font-weight: 400;
-  color: var(--title-text-color);
+  color: var(--highlight-color);
   vertical-align: bottom;
   padding: 0;
   text-align: left;;
@@ -94,40 +85,41 @@ td:not(.empty-day) {
   user-select: none;
 }
 
-/* Highlight states - Dots */
-.mark-1,
+/* Highlight states - Dots (two levels) */
 .mark-2,
 .mark-3 {
   position: relative;
 }
 
-.mark-1::after,
 .mark-2::after,
 .mark-3::after {
   content: "";
   position: absolute;
-  top: 4px;
-  right: 4px;
-  width: 8px;
-  height: 8px;
+  top: 0.35em;
+  right: 0.35em;
+  width: 0.65em;
+  height: 0.65em;
   border-radius: 50%;
 }
 
-/* 1. Filled Dot (Neutral) */
-.mark-1::after {
-  background-color: var(--highlight-1);
-}
-
-/* 2. Filled Colored Dot */
+/* 1. Outlined Dot */
 .mark-2::after {
   background-color: transparent;
-  border: 1.5px solid var(--text-color);
+  border: 1.5px solid var(--highlight-color);
   box-sizing: border-box;
 }
 
-/* 3. Dot Outline (Border only) */
+.weekend.mark-2::after {
+  border-color: var(--bg-page);
+}
+
+/* 2. Filled Dot */
 .mark-3::after {
-  background-color: var(--weekend-bg);
+  background-color: var(--highlight-color);
+}
+
+.weekend.mark-3::after {
+  background-color: var(--bg-page);
 }
 
 #ui_tbody>tr:first-child>td {
@@ -153,11 +145,23 @@ td:not(.empty-day) {
 }
 
 .cell_text {
-  text-align: center;
   font-weight: 300;
   text-transform: lowercase;
-  display: block;
-  align-content: center;
+  display: grid;
+  justify-content: center;
+  align-items: center;
+}
+
+.cell-editor {
+  width: calc(100% - 4px);
+  height: 100%;
+  box-sizing: border-box;
+  resize: none;
+  border: none;
+  outline: none;
+  font-family: inherit;
+  font-size: inherit;
+  padding: 2px;
 }
 
 /* Empty day cells (e.g. Feb 29–31): preserve grid, hide borders */
@@ -176,16 +180,16 @@ td:not(.empty-day) {
 
 .date {
   text-align: end;
-  color: var(--text-color)
+  color: var(--muted-text-color);
 }
 
 .day {
   text-align: start;
-  color: var(--muted-text-color);
+  color: var(--text-color);
 }
 
 .weekend-highlight {
-  background: var(--weekend-bg);
+  background: var(--highlight-color);
 }
 
 p {
@@ -212,8 +216,8 @@ p {
   left: 0;
   margin: 5em 2em;
   width: calc(100% - 6em);
-  background: var(--ui-bg);
-  color: var(--ui-text);
+  background: var(--highlight-color);
+  color: var(--text-color);
   padding: 1em 1em .5em 1em;
   font-size: 2vmax;
   border-radius: .2em;
@@ -239,7 +243,7 @@ p {
   width: 100%;
   text-align: end;
   font-size: 5vmin;
-  color: var(--title-text-color);
+  color: var(--highlight-color);
 }
 
 /* Moon phase styles */
@@ -259,7 +263,7 @@ p {
 
 .moon-name {
   font-size: 0.7em;
-  color: var(--moon-muted-text-color);
+  color: var(--muted-text-color);
   text-transform: none;
 }
 
