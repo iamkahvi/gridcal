@@ -111,8 +111,8 @@ td:not(.empty-day) {
 .mark_box_inner {
   display: inline-block;
   position: absolute;
-  width: 0.9em;
-  height: 0.9em;
+  width: 0.75em;
+  height: 0.75em;
   right: .3em;
   top: .3em;
 }
