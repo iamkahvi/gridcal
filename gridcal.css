@@ -45,7 +45,7 @@ body {
 }
 
 #page {
-  padding: 1rem 2rem;
+  padding: 1rem clamp(25px, 1rem, 100px);
   box-sizing: border-box;
 }
 
@@ -107,10 +107,10 @@ td:not(.empty-day) {
 .mark_box_inner {
   display: inline-block;
   position: absolute;
-  width: 0.7em;
-  height: 0.7em;
-  right: .3em;
-  top: .3em;
+  width: 13%;
+  height: 100%;
+  right: .1rem;
+  top: .1rem;
 }
 
 .mark_box_inner svg {
@@ -129,7 +129,7 @@ td:not(.empty-day) {
   display: flex;
   justify-content: space-between;
   align-self: end;
-  padding-inline: max(0.3rem, 5px);
+  padding-inline: 0.1rem;
 }
 
 .weekend .cell_box .day_box {
@@ -144,8 +144,7 @@ td:not(.empty-day) {
 
 .day_icon {
   display: inline-block;
-  width: 2em;
-  height: 2em;
+  width: 25%;
   vertical-align: middle;
 }
 
@@ -186,7 +185,7 @@ td:not(.empty-day) {
 .date,
 .day {
   display: inline-block;
-  width: 1rem;
+  width: 50%;
   vertical-align: text-bottom;
   font-size: .8vmin;
   font-weight: 400;
