@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+  <!-- Calendar body -->
+  <rect x="2" y="4" width="28" height="26" rx="3" fill="#ffffff" stroke="#111111" stroke-width="2"/>
+
+  <!-- Header bar -->
+  <rect x="2" y="4" width="28" height="6" rx="3" fill="#111111"/>
+
+  <!-- Rings -->
+  <rect x="8" y="1" width="3" height="6" rx="1" fill="#111111"/>
+  <rect x="21" y="1" width="3" height="6" rx="1" fill="#111111"/>
+
+  <!-- Grid dots (days) -->
+  <g fill="#111111">
+    <circle cx="9" cy="14" r="1.5"/>
+    <circle cx="16" cy="14" r="1.5"/>
+    <circle cx="23" cy="14" r="1.5"/>
+
+    <circle cx="9" cy="20" r="1.5"/>
+    <circle cx="16" cy="20" r="1.5"/>
+    <circle cx="23" cy="20" r="1.5"/>
+
+    <circle cx="9" cy="26" r="1.5"/>
+    <circle cx="16" cy="26" r="1.5"/>
+    <circle cx="23" cy="26" r="1.5"/>
+  </g>
+</svg>
