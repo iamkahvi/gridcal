@@ -369,7 +369,10 @@ function localized_month(locale, mo_idx) {
   return d.toLocaleDateString(locale, { month: "short" });
 }
 
-function neatocal_default() {
+function neatocal_default(params) {
+  console.log("params:", params);
+  let { w_holidays = false, w_marks = false } = params;
+
   let year = parseInt(GRIDCAL_PARAM.year);
   let start_mo = GRIDCAL_PARAM.start_month;
   let n_mo = GRIDCAL_PARAM.n_month;
@@ -435,12 +438,12 @@ function neatocal_default() {
 
         let yyyy_mm_dd = loop_date_str;
 
-        if (yyyy_mm_dd in MARKS_MAP) {
+        if (yyyy_mm_dd in MARKS_MAP && w_marks) {
           mark_box_inner.innerHTML = FULL_CIRCLE_SVG;
         }
 
         let txt = H.div();
-        if (yyyy_mm_dd in SVG_MAP) {
+        if (yyyy_mm_dd in SVG_MAP && w_holidays) {
           let span = H.span("", "day_icon");
           span.innerHTML = SVG_MAP[yyyy_mm_dd];
           txt.classList.add("cell_text");
@@ -728,7 +731,9 @@ function neatocal_parse_data(raw) {
   }
 }
 
-function neatocal_init() {
+function neatocal_init(params) {
+  const { w_marks, w_holidays } = params;
+
   // Apply highlight color from localStorage if present
   try {
     const highlight = localStorage.getItem("gridcal_highlight_color");
@@ -1044,10 +1049,10 @@ function neatocal_init() {
 
   // no data file, just render
   //
-  neatocal_render();
+  neatocal_render(params);
 }
 
-function neatocal_render() {
+function neatocal_render(params) {
   let cur_start_month = GRIDCAL_PARAM.start_month;
   let month_remain = GRIDCAL_PARAM.n_month;
   let s_year = parseInt(GRIDCAL_PARAM.year);
@@ -1088,7 +1093,7 @@ function neatocal_render() {
   //---
 
   // Row-wise version supports default layout only
-  neatocal_default();
+  neatocal_default(params);
 
   neatocal_post_process();
 }
