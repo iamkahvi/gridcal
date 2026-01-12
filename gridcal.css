@@ -11,16 +11,16 @@
 }
 
 :root {
-  --bg-page: #fffcf0;
-  --table-height: calc(100% - 8vmin);
+  --bg-page: #f4e3d2;
+  --table-height: calc(50vw);
 
   --border-color: #000;
-  --border-width: 1.5px;
+  --border-width: 2px;
 
   --text-color: #000;
   --muted-text-color: #000000;
 
-  --highlight-color: #B8B3E9;
+  --highlight-color: #99a55e;
 
   --moon-muted-text-color: #666;
 }
@@ -40,17 +40,18 @@ body {
   overflow: hidden;
   padding: 5px;
   box-sizing: border-box;
+  display: grid;
+  align-items: center;
 }
 
 #page {
-  height: 100%;
-  padding: 5px;
+  padding: 1em;
   box-sizing: border-box;
 }
 
 table {
   width: 100%;
-  height: calc(100% - 8vmin);
+  height: var(--table-height);
   border-collapse: collapse;
   border-spacing: 0;
 }
@@ -80,47 +81,8 @@ td {
 
 /* Interactivity */
 td:not(.empty-day) {
-  cursor: pointer;
   -webkit-user-select: none;
   user-select: none;
-}
-
-/* Highlight states - Dots (two levels) */
-.mark-2,
-.mark-3 {
-  position: relative;;
-}
-
-.mark-2::after,
-.mark-3::after {
-  font-size: 8px;
-  content: "";
-  position: absolute;
-  top: 0.35em;
-  right: 0.35em;
-  width: 0.65em;
-  height: 0.65em;
-  border-radius: 100%;
-}
-
-/* 1. Outlined Dot */
-.mark-2::after {
-  background-color: transparent;
-  border: 1.5px solid var(--highlight-color);
-  box-sizing: border-box;
-}
-
-.weekend.mark-2::after {
-  border-color: var(--bg-page);
-}
-
-/* 2. Filled Dot */
-.mark-3::after {
-  background-color: var(--highlight-color);
-}
-
-.weekend.mark-3::after {
-  background-color: var(--bg-page);
 }
 
 #ui_tbody>tr:first-child>td {
@@ -142,32 +104,65 @@ td:not(.empty-day) {
 .mark_box {
   display: flex;
   justify-content: flex-end;
-  align-items: center;
-  padding-right: 0.35em;
+  align-items: flex-start;
+  position: relative;
 }
 
 .mark_box_inner {
-  border-radius: 100%;
-  border: 1.5px solid var(--highlight-color);
-  box-sizing: border-box;
-  width: 0.65em;
-  height: 0.65em;
-  display: none;
+  display: inline-block;
+  position: absolute;
+  width: 0.7em;
+  height: 0.7em;
+  right: .3em;
+  top: .3em;
+}
+
+.mark_box_inner svg {
+  width: 100%;
+  height: 100%;
+  display: block;   /* removes inline baseline gap */
+}
+
+.mark_box_inner svg path {
+  stroke: var(--highlight-color);
+  fill: var(--highlight-color);
+  stroke: none;
 }
 
 .day_box {
   display: flex;
   justify-content: space-between;
   align-self: end;
-  padding-inline: 2px;
+  padding-inline: .3em;
+  font-weight: 400;
 }
 
 .cell_text {
-  font-weight: 300;
-  text-transform: lowercase;
   display: flex;
   justify-content: center;
   align-items: center;
+}
+
+.day_icon {
+  display: inline-block;
+  width: 2em;
+  height: 2em;
+  vertical-align: middle;
+}
+
+.day_icon svg {
+  width: 100%;
+  height: 100%;
+  display: block;
+  color: var(--highlight-color)
+}
+
+.day_icon path {
+  fill: var(--highlight-color);
+}
+
+.weekend-highlight .day_icon path {
+  fill: var(--bg-page);
 }
 
 .cell-editor {
