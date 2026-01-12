@@ -565,54 +565,42 @@ function handleDayClick(e) {
 }
 
 function handleDayContextMenu(e) {
-  e.preventDefault();
-  let td = e.target.closest("td");
-  if (!td || td.classList.contains("empty-day")) return;
-
-  let dateId = td.id.replace("ui_", "");
-
-  // Prevent multiple editors
-  if (td.querySelector("textarea")) return;
-
-  let existing = GRIDCAL_PARAM.data[dateId] || "";
-
-  let textarea = document.createElement("textarea");
-  textarea.classList.add("cell-editor");
-  textarea.maxLength = GRIDCAL_TEXT_LIMIT;
-  textarea.value = existing;
-
-  let cancelled = false;
-
-  textarea.addEventListener("keydown", (ev) => {
-    if (ev.key === "Enter") {
-      ev.preventDefault();
-      textarea.blur();
-    }
-
-    if (ev.key === "Escape") {
-      ev.preventDefault();
-      cancelled = true;
-      neatocal_render();
-    }
-  });
-
-  textarea.addEventListener("blur", () => {
-    if (cancelled) return;
-
-    let val = textarea.value.trim();
-
-    if (val) {
-      GRIDCAL_PARAM.data[dateId] = val;
-    } else {
-      delete GRIDCAL_PARAM.data[dateId];
-    }
-
-    localStorage.setItem("gridcal_data", JSON.stringify(GRIDCAL_PARAM.data));
-    neatocal_render();
-  });
-
-  td.appendChild(textarea);
-  textarea.focus();
+  // e.preventDefault();
+  // let td = e.target.closest("td");
+  // if (!td || td.classList.contains("empty-day")) return;
+  // let dateId = td.id.replace("ui_", "");
+  // // Prevent multiple editors
+  // if (td.querySelector("textarea")) return;
+  // let existing = GRIDCAL_PARAM.data[dateId] || "";
+  // let textarea = document.createElement("textarea");
+  // textarea.classList.add("cell-editor");
+  // textarea.maxLength = GRIDCAL_TEXT_LIMIT;
+  // textarea.value = existing;
+  // let cancelled = false;
+  // textarea.addEventListener("keydown", (ev) => {
+  //   if (ev.key === "Enter") {
+  //     ev.preventDefault();
+  //     textarea.blur();
+  //   }
+  //   if (ev.key === "Escape") {
+  //     ev.preventDefault();
+  //     cancelled = true;
+  //     neatocal_render();
+  //   }
+  // });
+  // textarea.addEventListener("blur", () => {
+  //   if (cancelled) return;
+  //   let val = textarea.value.trim();
+  //   if (val) {
+  //     GRIDCAL_PARAM.data[dateId] = val;
+  //   } else {
+  //     delete GRIDCAL_PARAM.data[dateId];
+  //   }
+  //   localStorage.setItem("gridcal_data", JSON.stringify(GRIDCAL_PARAM.data));
+  //   neatocal_render();
+  // });
+  // td.appendChild(textarea);
+  // textarea.focus();
 }
 
 function neatocal_post_process() {
@@ -661,8 +649,8 @@ function neatocal_post_process() {
   let tbody = document.getElementById("ui_tbody");
   tbody.removeEventListener("click", handleDayClick);
   tbody.removeEventListener("contextmenu", handleDayContextMenu);
-  tbody.addEventListener("click", handleDayClick);
-  tbody.addEventListener("contextmenu", handleDayContextMenu);
+  // tbody.addEventListener("click", handleDayClick);
+  // tbody.addEventListener("contextmenu", handleDayContextMenu);
 }
 
 function loadXHR(url, _cb, _errcb) {
