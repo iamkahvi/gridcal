@@ -45,7 +45,7 @@ body {
 }
 
 #page {
-  padding: 1em;
+  padding: 1rem 2rem;
   box-sizing: border-box;
 }
 
@@ -71,10 +71,6 @@ th {
 td {
   border-bottom: var(--border-width) solid var(--border-color);
   border-right: var(--border-width) solid var(--border-color);
-  font-size: .8vmin;
-  font-weight: 300;
-  color: var(--text-color);
-  vertical-align: bottom;
   padding: 0;
   transition: background-color 0.15s ease;
 }
@@ -133,8 +129,11 @@ td:not(.empty-day) {
   display: flex;
   justify-content: space-between;
   align-self: end;
-  padding-inline: .3em;
-  font-weight: 400;
+  padding-inline: max(0.3rem, 5px);
+}
+
+.weekend .cell_box .day_box {
+  /* background-color: var(--bg-page); */
 }
 
 .cell_text {
@@ -187,18 +186,19 @@ td:not(.empty-day) {
 .date,
 .day {
   display: inline-block;
-  width: 1em;
+  width: 1rem;
   vertical-align: text-bottom;
+  font-size: .8vmin;
+  font-weight: 400;
+  color: var(--text-color);
 }
 
 .date {
   text-align: end;
-  color: var(--muted-text-color);
 }
 
 .day {
   text-align: start;
-  color: var(--text-color);
 }
 
 .weekend-highlight {

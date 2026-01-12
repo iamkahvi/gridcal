@@ -68,7 +68,9 @@ var GRIDCAL_PARAM = {
 
   // weekend highlight color
   //
-  highlight_color: "#eee",
+  highlight_color: "#99a55e",
+  background_color: "#f4e3d2",
+  text_color: "#000",
 
   // today's date highlight color
   //
@@ -370,7 +372,6 @@ function localized_month(locale, mo_idx) {
 }
 
 function neatocal_default(params) {
-  console.log("params:", params);
   let { w_holidays = false, w_marks = false } = params;
 
   let year = parseInt(GRIDCAL_PARAM.year);
@@ -433,8 +434,6 @@ function neatocal_default(params) {
         mark_box_inner.classList.add("mark_box_inner");
         mark_box.appendChild(mark_box_inner);
         mark_box.classList.add("mark_box");
-        span_cell_box.appendChild(mark_box);
-        let span = H.span("", "mark_icon");
 
         let yyyy_mm_dd = loop_date_str;
 
@@ -449,14 +448,16 @@ function neatocal_default(params) {
           txt.classList.add("cell_text");
           txt.appendChild(span);
         }
-        span_cell_box.appendChild(txt);
-
         let span_date = H.span(day.toString(), "date");
         let span_day = H.span(weekday, "day");
 
         span_day_box.appendChild(span_day);
         span_day_box.appendChild(span_date);
+
+        span_cell_box.appendChild(mark_box);
+        span_cell_box.appendChild(txt);
         span_cell_box.appendChild(span_day_box);
+
         td.appendChild(span_cell_box);
 
         if (dt.getDay() === 1 && GRIDCAL_PARAM.show_week_numbers) {
@@ -640,7 +641,6 @@ function neatocal_post_process() {
 
   // Milestone 1: Load and apply saved marks
   let marks = MARKS_MAP;
-  console.log("Applying marks:", marks);
   for (let date in marks) {
     let ele = document.getElementById("ui_" + date);
     if (ele) {
@@ -732,38 +732,19 @@ function neatocal_parse_data(raw) {
 }
 
 function neatocal_init(params) {
-  const { w_marks, w_holidays } = params;
-
-  // Apply highlight color from localStorage if present
-  try {
-    const highlight = localStorage.getItem("gridcal_highlight_color");
-    if (highlight) {
-      const color = highlight.startsWith("#") ? highlight : "#" + highlight;
-      document.documentElement.style.setProperty("--highlight-color", color);
-    }
-
-    const background = localStorage.getItem("gridcal_background_color");
-    if (background) {
-      const bgColor = background.startsWith("#")
-        ? background
-        : "#" + background;
-      document.documentElement.style.setProperty("--bg-page", bgColor);
-    }
-  } catch (e) {
-    console.warn("Failed to apply gridcal color settings", e);
-  }
-
   let sp = new URLSearchParams(window.location.search);
 
   // peel off parameters from URL
   //
+  let highlight_color_param = sp.get("hl_color");
+  let background_color_param = sp.get("bg_color");
+  let text_color_param = sp.get("text_color");
 
   let help_param = sp.get("help");
   let year_param = sp.get("year");
   let start_month_param = sp.get("start_month");
   let n_month_param = sp.get("n_month");
   let start_day_param = sp.get("start_day");
-  let highlight_color_param = sp.get("highlight_color");
   let today_highlight_color_param = sp.get("today_highlight_color");
   let cell_height_param = sp.get("cell_height");
   let weekday_code_param = sp.get("weekday_code");
@@ -854,6 +835,31 @@ function neatocal_init(params) {
     }
   }
   GRIDCAL_PARAM.highlight_color = highlight_color;
+
+  //---
+
+  let background_color = GRIDCAL_PARAM.background_color;
+  if (
+    background_color_param != null &&
+    typeof background_color_param !== "undefined"
+  ) {
+    background_color = background_color_param;
+    if (background_color.match(/^[\da-fA-F]+/)) {
+      background_color = "#" + background_color;
+    }
+  }
+  GRIDCAL_PARAM.background_color = background_color;
+
+  //---
+
+  let text_color = GRIDCAL_PARAM.text_color;
+  if (text_color_param != null && typeof text_color_param !== "undefined") {
+    text_color = text_color_param;
+    if (text_color.match(/^[\da-fA-F]+/)) {
+      text_color = "#" + text_color;
+    }
+  }
+  GRIDCAL_PARAM.text_color = text_color;
 
   //---
 
@@ -1034,7 +1040,6 @@ function neatocal_init(params) {
   // Load data from localStorage if available and valid, otherwise default to empty object
   try {
     const localData = localStorage.getItem("gridcal_data");
-    console.log("Loaded gridcal_data from localStorage:", localData);
     if (localData) {
       const parsedData = JSON.parse(localData);
       GRIDCAL_PARAM.data =
@@ -1045,6 +1050,27 @@ function neatocal_init(params) {
   } catch (e) {
     console.error("Failed to load gridcal_data from localStorage", e);
     GRIDCAL_PARAM.data = {};
+  }
+
+  // Apply highlight color from localStorage if present
+  if (highlight_color) {
+    const color = highlight_color.startsWith("#")
+      ? highlight_color
+      : "#" + highlight_color;
+    document.documentElement.style.setProperty("--highlight-color", color);
+  }
+
+  if (background_color) {
+    const bgColor = background_color.startsWith("#")
+      ? background_color
+      : "#" + background_color;
+    document.documentElement.style.setProperty("--bg-page", bgColor);
+  }
+
+  if (text_color) {
+    const txtColor = text_color.startsWith("#") ? text_color : "#" + text_color;
+    document.documentElement.style.setProperty("--text-color", txtColor);
+    document.documentElement.style.setProperty("--border-color", txtColor);
   }
 
   // no data file, just render
