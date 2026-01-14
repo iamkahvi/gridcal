@@ -1057,7 +1057,10 @@ function neatocal_init(params) {
     const color = highlight_color.startsWith("#")
       ? highlight_color
       : "#" + highlight_color;
-    document.documentElement.style.setProperty("--highlight-color", color);
+    const rgbaColor = hex2rgba(color, 0.8);
+
+    document.documentElement.style.setProperty("--highlight-color", rgbaColor);
+    document.documentElement.style.setProperty("--highlight-text-color", color);
   }
 
   if (background_color) {
@@ -1123,3 +1126,8 @@ function neatocal_render(params) {
 
   neatocal_post_process();
 }
+
+const hex2rgba = (hex, alpha = 1) => {
+  const [r, g, b] = hex.match(/\w\w/g).map((x) => parseInt(x, 16));
+  return `rgba(${r},${g},${b},${alpha})`;
+};
