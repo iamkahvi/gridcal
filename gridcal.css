@@ -105,11 +105,9 @@ td:not(.empty-day) {
 }
 
 .mark_box_inner {
-  display: inline-block;
-  position: absolute;
-  width: 13%;
-  right: .1rem;
-  top: .1rem;
+  width: 11%;
+  padding-right: 5%;
+  padding-top: 5%;
 }
 
 .mark_box_inner svg {
