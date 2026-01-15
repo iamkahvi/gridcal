@@ -48,11 +48,12 @@ body {
 #page {
   padding: 1rem clamp(25px, 1rem, 100px);
   box-sizing: border-box;
+  height: auto;
+  width: 100%;
+  aspect-ratio: 2 / 1;
 }
 
 table {
-  height: auto;
-  aspect-ratio: 2 / 1;
   border-collapse: collapse;
   border-spacing: 0;
 }
