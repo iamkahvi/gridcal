@@ -10,6 +10,8 @@
     <style>
       body { font-family: system-ui, sans-serif; }
       iframe { border: none; border-top: 2px solid black; border-bottom: 2px solid black; }
+      a { display : inline-block; }
+      a iframe { pointer-events : none; }
     </style>
 </head>
 
@@ -20,7 +22,9 @@
 
     <br>
 
-        <iframe style="aspect-ratio: 3 / 2;width:max(50%, 350px);" src="/full"></iframe>
+        <a href="/full" target="_blank" style="display:block">
+          <iframe style="aspect-ratio: 3 / 2;width:max(50%, 350px);" src="/full"></iframe>
+        </a>
 
         <h2>a calendar that</h2>
 
@@ -52,17 +56,16 @@
         <p>here's some inspiration:</p>
 
         <ul>
-          <li><a href="/full">default</a></li>
-          <li><a href="/blank">blank default</a></li>
-          <li><a href="/full/?hl_color=9FBFFF&bg_color=372020&text_color=FFEDA1">night mode</a></li>
-          <li><a href="/full/?hl_color=B2BD7E&bg_color=FFFFFF&text_color=749C75">lighter default</a></li>
-          <li><a href="/full/?hl_color=749C75&bg_color=B2BD7E&text_color=E9D985">forest 1</a></li>
-          <li><a href="/full/?hl_color=D2A432&bg_color=FFFFF4&text_color=5B3B1E">golden</a></li>
-          <li><a href="/full/?hl_color=BC5727&bg_color=FFFFF4&text_color=5B3B1E">rusty</a></li>
-          <li><a href="/full/?hl_color=6E782F&bg_color=FFFFF4&text_color=390400">dark green</a></li>
-          <li><a href="/full/?hl_color=B2BD7E&bg_color=E9D985&text_color=749C75">forest 2</a></li>
-          <li><a href="/full/?hl_color=B55F3B&bg_color=F4FBF8&text_color=630852">whiter rusty</a></li>
-          <li><a href="/full/?hl_color=4CC9F0&bg_color=fff&text_color=F72585">bubblegum ice cream</a></li>
+          <li><a target="_blank" href="/full">default</a></li>
+          <li><a target="_blank" href="/blank">blank default</a></li>
+          <li><a target="_blank" href="/full/?hl_color=9FBFFF&bg_color=372020&text_color=FFEDA1">night mode</a></li>
+          <li><a target="_blank" href="/full/?hl_color=B2BD7E&bg_color=FFFFFF&text_color=749C75">lighter default</a></li>
+          <li><a target="_blank" href="/full/?hl_color=D2A432&bg_color=FFFFF4&text_color=5B3B1E">golden</a></li>
+          <li><a target="_blank" href="/full/?hl_color=BC5727&bg_color=FFFFF4&text_color=5B3B1E">rusty</a></li>
+          <li><a target="_blank" href="/full/?hl_color=6E782F&bg_color=FFFFF4&text_color=390400">dark green</a></li>
+          <li><a target="_blank" href="/full/?hl_color=749C75&bg_color=B2BD7E&text_color=E9D985">forest</a></li>
+          <li><a target="_blank" href="/full/?hl_color=B55F3B&bg_color=F4FBF8&text_color=630852">whiter rusty</a></li>
+          <li><a target="_blank" href="/full/?hl_color=4CC9F0&bg_color=fff&text_color=F72585">bubblegum</a></li>
         </ul>
 
         <h2>how to <span style="color:orange;">buy</span> the calendar</h2>
@@ -74,5 +77,7 @@
         <p>landing page inpired by <a href="https://motherfuckingwebsite.com/">this beautiful website</a>.</p>
 
         <p>online calendar inpired by <a href="https://www.neatnik.net/calendar/">neatnik</a>.</p>
+
+        <p><a href="https://github.com/iamkahvi/gridcal">source</a></p>
 </body>
 </html>
