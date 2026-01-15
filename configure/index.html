@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+  <title>grid calendar configurator</title>
+  <style>
+    body { font-family: system-ui, sans-serif; }
+    .row { margin: 1rem 0; }
+    label { display: inline-block; width: 140px; }
+    input, select, button { font-size: 1rem; }
+    code { background: #f3f3f3; padding: 0.25rem 0.5rem; display: inline-block; }
+  </style>
+</head>
+<body>
+  <h1>gridcalendar configurator</h1>
+  <p>Customize colors and calendar type, then jump to your calendar.</p>
+
+  <div class="row">
+    <label for="type">calendar type</label>
+    <select id="type">
+      <option value="full">full</option>
+      <option value="w_holidays">with holidays</option>
+      <option value="w_marks">with marks</option>
+      <option value="blank">blank</option>
+    </select>
+  </div>
+
+  <div class="row">
+    <label for="hl">highlight color</label>
+    <input id="hl" type="color" value="#99a55e">
+  </div>
+
+  <div class="row">
+    <label for="bg">background color</label>
+    <input id="bg" type="color" value="#f4e3d2">
+  </div>
+
+  <div class="row">
+    <label for="text">text color</label>
+    <input id="text" type="color" value="#000">
+  </div>
+
+  <div class="row">
+    <label for="hl_text">highlight text</label>
+    <input id="hl_text" type="color" value="#99a55e">
+  </div>
+
+  <div class="row">
+    <strong>generated URL</strong><br>
+    <code id="url"></code>
+  </div>
+
+  <div class="row">
+    <button onclick="go()">go to calendar</button>
+  </div>
+
+  <script>
+    const type = document.getElementById('type');
+    const hl = document.getElementById('hl');
+    const bg = document.getElementById('bg');
+    const text = document.getElementById('text');
+    const hlText = document.getElementById('hl_text');
+    const urlEl = document.getElementById('url');
+
+    function hex(v) {
+      return v.replace('#', '').toUpperCase();
+    }
+
+    function update() {
+      const url = `/${type.value}/?hl_color=${hex(hl.value)}&hl_text_color=${hex(hlText.value)}&bg_color=${hex(bg.value)}&text_color=${hex(text.value)}`;
+      urlEl.textContent = url;
+    }
+
+    function go() {
+      window.open(urlEl.textContent, '_blank');
+    }
+
+    type.onchange = update;
+    hl.oninput = update;
+    bg.oninput = update;
+    text.oninput = update;
+    hlText.oninput = update;
+    update();
+  </script>
+</body>
+</html>
