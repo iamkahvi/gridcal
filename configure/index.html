@@ -43,11 +43,6 @@
   </div>
 
   <div class="row">
-    <label for="hl_text">highlight text</label>
-    <input id="hl_text" type="color" value="#99a55e">
-  </div>
-
-  <div class="row">
     <strong>generated URL</strong><br>
     <code id="url"></code>
   </div>
@@ -61,7 +56,6 @@
     const hl = document.getElementById('hl');
     const bg = document.getElementById('bg');
     const text = document.getElementById('text');
-    const hlText = document.getElementById('hl_text');
     const urlEl = document.getElementById('url');
 
     function hex(v) {
@@ -69,7 +63,7 @@
     }
 
     function update() {
-      const url = `/${type.value}/?hl_color=${hex(hl.value)}&hl_text_color=${hex(hlText.value)}&bg_color=${hex(bg.value)}&text_color=${hex(text.value)}`;
+      const url = `/${type.value}/?hl_color=${hex(hl.value)}&bg_color=${hex(bg.value)}&text_color=${hex(text.value)}`;
       urlEl.textContent = url;
     }
 
@@ -81,7 +75,6 @@
     hl.oninput = update;
     bg.oninput = update;
     text.oninput = update;
-    hlText.oninput = update;
     update();
   </script>
 </body>
