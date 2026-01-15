@@ -1,3 +1,8 @@
+const hex2rgba = (hex, alpha = 1) => {
+  const [r, g, b] = hex.match(/\w\w/g).map((x) => parseInt(x, 16));
+  return `rgba(${r},${g},${b},${alpha})`;
+};
+
 var GRIDCAL_PARAM = {
   // experiments with filling in data in cells
   //
@@ -69,6 +74,7 @@ var GRIDCAL_PARAM = {
   // weekend highlight color
   //
   highlight_color: "#99a55e",
+  highlight_text_color: hex2rgba("#99a55e", 0.8),
   background_color: "#f4e3d2",
   text_color: "#000",
 
@@ -737,6 +743,7 @@ function neatocal_init(params) {
   // peel off parameters from URL
   //
   let highlight_color_param = sp.get("hl_color");
+  let highlight_text_color_param = sp.get("hl_text_color");
   let background_color_param = sp.get("bg_color");
   let text_color_param = sp.get("text_color");
 
@@ -1063,6 +1070,14 @@ function neatocal_init(params) {
     document.documentElement.style.setProperty("--highlight-text-color", color);
   }
 
+  if (highlight_text_color_param) {
+    const color = highlight_text_color_param.startsWith("#")
+      ? highlight_text_color_param
+      : "#" + highlight_text_color_param;
+
+    document.documentElement.style.setProperty("--highlight-text-color", color);
+  }
+
   if (background_color) {
     const bgColor = background_color.startsWith("#")
       ? background_color
@@ -1126,8 +1141,3 @@ function neatocal_render(params) {
 
   neatocal_post_process();
 }
-
-const hex2rgba = (hex, alpha = 1) => {
-  const [r, g, b] = hex.match(/\w\w/g).map((x) => parseInt(x, 16));
-  return `rgba(${r},${g},${b},${alpha})`;
-};
