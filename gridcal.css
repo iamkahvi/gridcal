@@ -51,8 +51,8 @@ body {
 }
 
 table {
-  width: 100%;
-  height: var(--table-height);
+  height: auto;
+  aspect-ratio: 2 / 1;
   border-collapse: collapse;
   border-spacing: 0;
 }
@@ -89,7 +89,7 @@ td:not(.empty-day), th, .year-label {
 /* DAY CELL STYLING */
 
 #ui_table td {
-  height: 6vh;
+  height: calc(100vw / 24);
 }
 
 .cell_box {
