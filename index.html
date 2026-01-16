@@ -12,6 +12,45 @@
       iframe { border: none; border-top: 2px solid black; border-bottom: 2px solid black; }
       a { display : inline-block; }
       a iframe { pointer-events : none; }
+      .rainbow{
+          animation: rainbow 10s linear;
+          animation-iteration-count: infinite;
+      }
+      @keyframes rainbow{
+          100%,0%{
+            color: rgb(255,0,0);
+          }
+          8%{
+            color: rgb(255,127,0);
+          }
+          16%{
+            color: rgb(255,255,0);
+          }
+          25%{
+            color: rgb(127,255,0);
+          }
+          33%{
+            color: rgb(0,255,0);
+          }
+          41%{
+            color: rgb(0,255,127);
+          }
+          50%{
+            color: rgb(0,255,255);
+          }
+          68%{
+            color: rgb(0,127,255);
+          }
+          75%{
+            color: rgb(127,0,255);
+          }
+          83%{
+            color: rgb(255,0,255);
+          }
+          91%{
+            color: rgb(255,0,127);
+          }
+      }
     </style>
 </head>
 
@@ -50,11 +89,11 @@
           <li>laminate it (optional)</li>
         </ol>
 
-        <h2>how to use <span style="color:orange;">custom colors</span></h2>
+        <h2>how to use <span class="rainbow">custom colors</span></h2>
 
         <p>if you'd rather use your own colors, use the <a target="_blank" href="/configure">configure page</a>.</p>
 
-        <p>once you're happy, print it. For best results, adjust your print settings to landscape orientation and disable the header and footer.</p>
+        <p>once you're happy, print it. For best results, print in landscape orientation and disable the header and footer.</p>
 
         <p>here's some inspiration:</p>
 
